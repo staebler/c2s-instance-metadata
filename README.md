@@ -33,6 +33,7 @@ yourself or use quay.io/staebler/c2s-instance-metadata:latest.
     1. Set the `.metadata.labels[machineconfiguration.openshift.io/role]` field in each copy, with one set to "master" and
 the other set to "worker".
     1. Set the `.metadata.name` field in each copy so that the names are different.
+    1. Replace {{C2S-INSTANCE-METADATA-IMAGE}} with the c2s-instance-metadata image in your registry.
 1. Add a non-empty but unused cloud config to the cloud-provider-config manifest. This is needed for the time being
 because there is an issue with the kube-apiserver where it is expecting a cloud config to exist.
     1. Add the following snippet to the `.data` field of "${install-dir}/manifests/cloud-provider-config.yaml".

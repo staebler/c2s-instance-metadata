@@ -8,10 +8,6 @@ spec:
   config:
     ignition:
       version: 3.1.0
-    passwd:
-      users:
-      - name: metadata
-        groups: [sudo]
     systemd:
       units:
       - name: c2s-instance-metadata-setup.service
@@ -23,6 +19,7 @@ spec:
           [Service]
           Type=oneshot
           RemainAfterExit=true
+          ExecStart=/usr/bin/sh -c 'if ! id metadata &>/dev/null; then useradd -p "*" -U -m metadata -G sudo; fi'
           ExecStart=iptables -t nat -I OUTPUT -p tcp -m owner ! --uid-owner metadata --dst 169.254.169.254 --dport 80 -j REDIRECT --to-ports 4000
 
           [Install]
@@ -38,7 +35,7 @@ spec:
 
           [Service]
           User=metadata
-          ExecStart=podman run --userns keep-id --net host quay.io/staebler/c2s-instance-metadata
+          ExecStart=podman run --userns keep-id --net host {{C2S-INSTANCE-METADATA-IMAGE}}
           Restart=always
 
           [Install]
