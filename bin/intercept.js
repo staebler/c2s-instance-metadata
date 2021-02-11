@@ -49,6 +49,7 @@ server.on('request', (req, res) => {
         headers: req.headers
     }, (resp) => {
         console.log("Forwarding request for " + req.url)
+        res.statusCode = resp.statusCode
         new Promise((resolve, reject) => {
             const chunks = []
             resp.on('data', chunk => chunks.push(chunk))
@@ -58,7 +59,8 @@ server.on('request', (req, res) => {
             res.end(resp.replace(toReplace, argv.emulatedRegion));
         }).catch( (error) => {
             console.error(error);
-            res.end();
+            res.statusCode = 500
+            res.end(error);
         })
     });
 
